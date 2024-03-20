@@ -64,31 +64,37 @@
     <script type="text/babel">
 
     // Components
-    const Header = () => (
-        <header>Grammy's Blog</header>
+    function Header(props) {
+        return(
+            <header>Grammy's Blog</header>
+        )
+    }
+    
+    function Banner(props) {
+        return(
+            <div className="banner"></div>
+        )
+    }
+
+    function LoadingComponent(props){
+        return(
+            <div className="loading">Loading...</div>
+        )
+    }
+
+    function Post({ post }) {
+    return (
+        <div className="post">
+            <img src={post.image_url} alt={post.song_album_name} className="postImage" />
+            <h2 className="postTitle">{post.title}</h2>
+            <p>{post.content}</p>
+            <p>Category: {post.category}</p>
+            <p>Award Date: {new Date(post.award_date).toLocaleDateString()}</p>
+        </div>
     );
+}
 
-    const Banner = () => (
-        <div className="banner"></div>
-    );
-
-    const LoadingComponent = () => (
-        <div className="loading">Loading...</div>
-    );
-
-    const Post = ({ post }) => {
-        return (
-            <div className="post">
-                <img src={post.image_url} alt={post.song_album_name} className="postImage" />
-                <h2 className="postTitle">{post.title}</h2>
-                <p>{post.content}</p>
-                <p>Category: {post.category}</p>
-                <p>Award Date: {new Date(post.award_date).toLocaleDateString()}</p>
-            </div>
-        );
-    };
-
-    const App = () => {
+    function App (props)  {
     const [posts, setPosts] = React.useState([]);
     const [loading, setLoading] = React.useState(true); //True mientras espera la obtención de datos
     const [error, setError] = React.useState(null); 
