@@ -9,11 +9,12 @@
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background: #f5f5f5;
+            background: #000000;
             }
             header {
-                background-color: #000000;
+                background-color: #EFB810;
                 color: white;
+                height: 100px;
                 padding: 10px 0;
                 text-align: center;
                 font-size: 24px;
@@ -48,6 +49,9 @@
                 text-align: center;
                 padding: 50px;
             }
+            .error{
+                color:red;
+            }
         </style>
     </head>
 <body>
@@ -58,6 +62,19 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <script type="text/babel">
+
+    // Components
+    const Header = () => (
+        <header>Grammy's Blog</header>
+    );
+
+    const Banner = () => (
+        <div className="banner"></div>
+    );
+
+    const LoadingComponent = () => (
+        <div className="loading">Loading...</div>
+    );
 
     const Post = ({ post }) => {
         return (
@@ -73,45 +90,40 @@
 
     const App = () => {
     const [posts, setPosts] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState(null);
+    const [loading, setLoading] = React.useState(true); //True mientras espera la obtención de datos
+    const [error, setError] = React.useState(null); 
 
-    const fetchPosts = async () => {
-        try {
+    // Obtener los posts de la api
+    async function fetchPosts() {
+        try{
             const response = await fetch('http://localhost:22249/posts');
-            if (!response.ok) {
-                throw Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok){
+                throw new Error(`Error! status: ${response.status}`);
             }
             const data = await response.json();
             setPosts(data);
-            setLoading(false); 
-        } catch (error) {
+            setLoading(false);
+        } catch (error){
             console.error("Error fetching posts:", error);
-            setError(error.message); 
+            setError(error.message);
             setLoading(false);
         }
-    };
+    }
 
     React.useEffect(() => {
         fetchPosts();
     }, []);
 
-    if (loading) {
-        return <div className="loading">Loading...</div>;
-    }
-
-    if (error) {
-        return <div className="error">{error}</div>; 
-    }
-
     return (
-        <div>
-        <header>Grammy's Blog</header>
-            <div className="banner"></div>
-            <div className="container">
-                {posts.map(post => <Post key={post.id} post={post} />)}
+            <div>
+                <Header />
+                <Banner />
+                {loading ? <LoadingComponent /> : error ? <div className="error">{error}</div> : (
+                    <div className="container">
+                        {posts.map(post => <Post key={post.id} post={post} />)}
+                    </div>
+                )}
             </div>
-        </div>
         );
     };
 
